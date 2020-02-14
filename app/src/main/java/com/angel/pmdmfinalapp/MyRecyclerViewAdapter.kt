@@ -1,16 +1,15 @@
-package com.miguel.tasks
+package com.angel.pmdmfinalapp
 
 import android.content.Context
 import android.database.Cursor
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import com.angel.pmdmfinalapp.MainActivity
-import com.angel.pmdmfinalapp.R
 import android.view.View as View1
 
 class MyRecyclerViewAdapter :
@@ -26,8 +25,7 @@ class MyRecyclerViewAdapter :
     /**
      * Inflamos la vista de los items.
      */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
-            ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         Log.d("RECYCLERVIEW", "onCreateViewHolder")
         val inflater = LayoutInflater.from(parent.context)
         return ViewHolder(
@@ -50,42 +48,48 @@ class MyRecyclerViewAdapter :
         // Importante para recorrer el cursor.
         cursor.moveToPosition(position)
         Log.d("RECYCLERVIEW", "onBindViewHolder")
+
         // Asignamos los valores a los elementos de la UI.
         Log.d("String del cursor", cursor.getString(0))
-        holder.textTask.text = cursor.getString(2)
-        holder.dateTask.text = cursor.getString(1)
+        holder.taskName.text = cursor.getString(1)
+        holder.taskDescription.text = cursor.getString(6)
+        holder.dateSince.text = cursor.getString(3)
+        holder.dateTo.text = cursor.getString(4)
+
+        holder.color = cursor.getInt(5)
+        holder.itemView.setBackgroundColor(holder.color)
     }
+
     inner class ViewHolder : RecyclerView.ViewHolder {
         // Creamos las referencias de la UI.
-        val textTask: TextView
-        val dateTask: TextView
+        val taskName: TextView
+        val taskDescription: TextView
+        val dateSince: TextView
+        val dateTo: TextView
+        var color: Int
 
         constructor(view: View1) : super(view) {
-            this.textTask = view.findViewById(R.id.tv_Name)
-            this.dateTask = view.findViewById(R.id.tv_description)
+            this.taskName = view.findViewById(R.id.tv_Name)
+            this.taskDescription = view.findViewById(R.id.tv_description)
+            this.dateSince = view.findViewById(R.id.tv_since)
+            this.dateTo = view.findViewById(R.id.tv_to)
+            this.color = 0
+
             view.setOnClickListener {
                 Toast.makeText(
                     context,
-                    "${this.textTask.text} - ${this.dateTask.text}",
+                    "${this.taskName.text} - ${this.dateSince.text}",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
+            /*
+            view.setOnLongClickListener(){
+
+            }*/
+
             view.updateLayoutParams {
 
-            }
-            view.setOnLongClickListener {
-
-                when (actionMode) {
-                    null -> {
-                        // Lanzamos el ActionMode.
-                        Toast.makeText(context, "Option 1", Toast.LENGTH_LONG).show()
-                        actionMode = it.startActionMode(actionModeCallback)
-                        it.isSelected = true
-                        true
-                    }
-                    else -> false
-                }
             }
         }
 
@@ -93,25 +97,7 @@ class MyRecyclerViewAdapter :
 
             override fun onActionItemClicked(
                 mode: ActionMode?, item: MenuItem?): Boolean {
-                return /*when (item!!.itemId) {
-                    R.id.option01 -> {
-                        Toast.makeText(
-                            MainActivity().applicationContext,
-                            "Option 1",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        return true
-                    }
-                    R.id.option02 -> {
-                        Toast.makeText(
-                            MainActivity().applicationContext,
-                            "Option 2",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        return true
-                    }
-                    else -> false
-                }*/ false
+                return true
             }
 
             override fun onCreateActionMode(

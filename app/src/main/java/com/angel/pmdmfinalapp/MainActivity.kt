@@ -1,18 +1,13 @@
 package com.angel.pmdmfinalapp
 
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.CursorAdapter
-import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.miguel.tasks.MyRecyclerViewAdapter
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -51,6 +46,11 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        downloadData()
     }
 
     private fun downloadData(){
