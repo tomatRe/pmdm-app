@@ -1,18 +1,28 @@
 package com.angel.pmdmfinalapp
 
+import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.util.Log
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
+import android.widget.CursorAdapter
+import android.widget.TextView
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.miguel.tasks.MyRecyclerViewAdapter
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
         lateinit var eventsDBHelper: MyDBOpenHelper
     }
+    //var db: SQLiteDatabase? = null
 
     private var events = ArrayList<eventObject>()
 
@@ -32,15 +42,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
@@ -48,29 +54,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun downloadData(){
-        //TODO download data from database
 
-        /*
-         tv_database.text = ""
-            val db: SQLiteDatabase = peopleDBHelper.readableDatabase
+        val db: SQLiteDatabase = eventsDBHelper.readableDatabase
 
-            val cursor = db.rawQuery(
-                " SELECT * FROM ${MyDBOpenHelper.TABLE_PEOPLE}",
-                null
-            )
+        val cursor = db.rawQuery(
+            " SELECT * FROM ${MyDBOpenHelper.TABLE_EVENTS}",
+            null
+        )
 
-            // Comprobamos que haya al menos un registro.
-            if (cursor.moveToFirst()) {
-                do {
-                    tv_database.append(cursor.getInt(0).toString() + " - ")
-                    tv_database.append(cursor.getString(1).toString() + " ")
-                    tv_database.append(cursor.getString(2).toString() + "\n")
-                } while (cursor.moveToNext())
-            } else {
-                myToast("No hay datos a mostrar.")
-            }
+        // Comprobamos que haya al menos un registro.
+        if (cursor.moveToFirst()) {
 
-            db.close()
-        */
+            do {
+                // Creamos el adaptador con el resultado del cursor.
+                val myRecyclerViewAdapter = MyRecyclerViewAdapter()
+                myRecyclerViewAdapter.MyRecyclerViewAdapter(this, cursor)
+                // Montamos el RecyclerView.
+                myRecycler.setHasFixedSize(true)
+                myRecycler.layoutManager = LinearLayoutManager(this)
+                myRecycler.adapter = myRecyclerViewAdapter
+            } while (cursor.moveToNext())
+
+        } else {
+            myToast("No hay datos a mostrar.")
+            Log.d("Database", "Database empty")
+        }
+
+        db.close()
+    }
+
+    private fun myToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

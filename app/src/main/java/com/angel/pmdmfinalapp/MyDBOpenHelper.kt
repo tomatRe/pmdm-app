@@ -5,11 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
-import android.graphics.Color
-import android.os.Build
 import android.util.Log
-import java.time.LocalDateTime
-import java.util.*
 
 class MyDBOpenHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
@@ -20,8 +16,8 @@ class MyDBOpenHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val TABLE_EVENTS = "events"
             val COLUMN_NAME = "name"
             val COLUMN_ALLDAY = "allDay"
-            val COLUMN_SINCE = "since"
-            val COLUMN_TO = "to"
+            val COLUMN_SINCE = "sinceDate"
+            val COLUMN_TO = "toDate"
             val COLUMN_COLOR = "color"
             var COLUMN_DESCRIPTION = "description"
     }
@@ -34,10 +30,11 @@ class MyDBOpenHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     override fun onCreate(db: SQLiteDatabase?) {
         try {
-            val createTableEvents = "CREATE TABLE "+ TABLE_EVENTS +
-                    "(_id INTEGER PRIMARY KEY, name TEXT, allDay BOOLEAN, since TEXT," +
-                    " to TEXT, color INTEGER, description TEXT)"
+            val createTableEvents = "CREATE TABLE $TABLE_EVENTS " +
+                    "(id INTEGER PRIMARY KEY, $COLUMN_NAME TEXT, $COLUMN_ALLDAY BOOLEAN" +
+                    ", $COLUMN_SINCE TEXT, $COLUMN_TO TEXT, $COLUMN_COLOR INTEGER, $COLUMN_DESCRIPTION TEXT);"
             db!!.execSQL(createTableEvents)
+            Log.e("SQLite(onCreate)", "Database Created")
         } catch (e: SQLiteException) {
             Log.e("SQLite(onCreate)", e.message.toString())
         }
@@ -74,6 +71,7 @@ class MyDBOpenHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
      */
 
     fun addEvent(name: String, allDay: Boolean, since: String, to: String, color:Int, description: String) {
+
         // Creamos un ArrayMap<>().
         val data = ContentValues()
 
@@ -95,6 +93,7 @@ class MyDBOpenHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val db = this.writableDatabase
         db.insert(TABLE_EVENTS, null, data)
         db.close()
+        Log.d("DATABASE","Data Inserted")
     }
 
     /**
