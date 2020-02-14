@@ -1,12 +1,15 @@
 package com.angel.pmdmfinalapp
 
 import android.content.Context
+import android.content.DialogInterface
 import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import android.graphics.Color
 import android.util.Log
 import android.view.*
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
@@ -83,14 +86,43 @@ class MyRecyclerViewAdapter :
                 ).show()
             }
 
-            /*
-            view.setOnLongClickListener(){
 
-            }*/
+            view.setOnLongClickListener(){
+                myAlertDialog("Estás seguro de que quieres borrar esta tarea?")
+            }
 
             view.updateLayoutParams {
-
             }
+        }
+
+        private val actionButton = { dialog: DialogInterface, which: Int ->
+            Delete()
+        }
+
+        private fun Delete(){
+            val db: SQLiteDatabase = MainActivity.eventsDBHelper.readableDatabase
+            //TODO
+        }
+
+
+        private fun myAlertDialog(message: String): Boolean {
+            val builder = AlertDialog.Builder(context)
+            // Creación del AlertDialog.
+            builder.apply {
+                // Asignamos un título.
+                setTitle("Borrar")
+                // Asignamos el cuerpo del mensaje.
+                setMessage(message)
+                // Definimos el comportamiento de los botones.
+                setPositiveButton(android.R.string.ok,
+                    DialogInterface.OnClickListener (function = actionButton))
+                setNegativeButton(android.R.string.no) { _, _ ->
+                    //nothing
+                }
+            }
+            // Se muestra el AlertDialog
+            builder.show()
+            return true
         }
 
         private val actionModeCallback = object : ActionMode.Callback {
