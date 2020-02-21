@@ -109,7 +109,7 @@ class AddEvent : AppCompatActivity() {
 
         bt_save.setOnClickListener(){
 
-            if(!et_name.text.isBlank() && dateSince != "" && dateTo != "")
+            if(!et_name.text.isBlank()/* && dateSince != "" && dateTo != ""*/)
                 eventsDBHelper.addEvent(
                     et_name.text.toString(), sw_allDay.isChecked,
                     dateSince, dateTo, color, et_description.text.toString()
